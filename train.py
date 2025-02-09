@@ -1,4 +1,5 @@
 from ultralytics import YOLO
+import torch
 
 # Load a model
 model = YOLO("yolo11.yaml")
@@ -6,17 +7,16 @@ model = YOLO("yolo11.yaml")
 # 定义训练参数，添加默认值、范围和中文注释
 train_params = {
     'data': "coco8.yaml",   # 数据集配置文件路径，需要自定义修改
-    'epochs': 300,               # 总训练轮次，默认值 100，范围 >= 1
+    'epochs': 400,               # 总训练轮次，默认值 100，范围 >= 1
     'imgsz': 320,               # 输入图像大小，默认值 640，范围 >= 32
-    'batch': 8,                # 批次大小，默认值 16，范围 >= 1
+    'batch': 64,                # 批次大小，默认值 16，范围 >= 1
     'save': True,               # 是否保存训练结果和模型，默认值 True
     'save_period': -1,          # 模型保存频率，默认值 -1，表示只保存最终结果
     'cache': False,             # 是否缓存数据集，默认值 False
-    'device': None,             # 训练设备，默认值 None，支持 "cpu", "gpu"(device=0,1), "mps"
-    'workers': 8,               # 数据加载线程数，默认值 8，影响数据预处理速度
-    'project': None,            # 项目名称，保存训练结果的目录，默认值 None
-    'name': None,            # 训练运行的名称，用于创建子目录保存结果，默认值 None
-    'exist_ok': False,          # 是否覆盖已有项目/名称目录，默认值 False
+    'device': torch.device("cuda:0" if torch.cuda.is_available() else "cpu"),             # 训练设备，默认值 None，支持 "cpu", "gpu"(device=0,1), "mps"
+    'workers': 32,               # 数据加载线程数，默认值 8，影响数据预处理速度
+    'project': "epfs/",            # 项目名称，保存训练结果的目录，默认值 None
+    'name': "train",            # 训练运行的名称，用于创建子目录保存结果，默认值 None
     'optimizer': 'auto',        # 优化器，默认值 'auto'，支持 'SGD', 'Adam', 'AdamW'
     'verbose': True,            # 是否启用详细日志输出，默认值 False
     'seed': 0,                  # 随机种子，确保结果的可重复性，默认值 0
@@ -51,24 +51,24 @@ train_params = {
     'plots': True,             # 是否生成训练曲线和验证指标图，默认值 True 
  
     # 数据增强相关参数
-    'hsv_h': 0.2,             # 色相变化范围 (0.0 - 1.0)，默认值 0.015
-    'hsv_s': 0.7,               # 饱和度变化范围 (0.0 - 1.0)，默认值 0.7
-    'hsv_v': 0.4,               # 亮度变化范围 (0.0 - 1.0)，默认值 0.4
-    'degrees': 30.0,             # 旋转角度范围 (-180 - 180)，默认值 0.0
-    'translate': 0.1,           # 平移范围 (0.0 - 1.0)，默认值 0.1
-    'scale': 0.5,               # 缩放比例范围 (>= 0.0)，默认值 0.5
-    'shear': 0.0,               # 剪切角度范围 (-180 - 180)，默认值 0.0
-    'perspective': 0.0,         # 透视变化范围 (0.0 - 0.001)，默认值 0.0
-    'flipud': 0.0,              # 上下翻转概率 (0.0 - 1.0)，默认值 0.0
-    'fliplr': 0.5,              # 左右翻转概率 (0.0 - 1.0)，默认值 0.5
-    'bgr': 0.0,                 # BGR 色彩顺序调整概率 (0.0 - 1.0)，默认值 0.0
-    'mosaic': 0.5,              # Mosaic 数据增强 (0.0 - 1.0)，默认值 1.0
-    'mixup': 0.0,               # Mixup 数据增强 (0.0 - 1.0)，默认值 0.0
-    'copy_paste': 0.0,          # Copy-Paste 数据增强 (0.0 - 1.0)，默认值 0.0
-    'copy_paste_mode': 'flip',  # Copy-Paste 增强模式 ('flip' 或 'mixup')，默认值 'flip'
-    'auto_augment': 'randaugment',  # 自动增强策略 ('randaugment', 'autoaugment', 'augmix')，默认值 'randaugment'
-    'erasing': 0.4,             # 随机擦除增强比例 (0.0 - 0.9)，默认值 0.4
-    'crop_fraction': 1.0,       # 裁剪比例 (0.1 - 1.0)，默认值 1.0
+    # 'hsv_h': 0.2,             # 色相变化范围 (0.0 - 1.0)，默认值 0.015
+    # 'hsv_s': 0.7,               # 饱和度变化范围 (0.0 - 1.0)，默认值 0.7
+    # 'hsv_v': 0.4,               # 亮度变化范围 (0.0 - 1.0)，默认值 0.4
+    # 'degrees': 30.0,             # 旋转角度范围 (-180 - 180)，默认值 0.0
+    # 'translate': 0.1,           # 平移范围 (0.0 - 1.0)，默认值 0.1
+    # 'scale': 0.5,               # 缩放比例范围 (>= 0.0)，默认值 0.5
+    # 'shear': 0.0,               # 剪切角度范围 (-180 - 180)，默认值 0.0
+    # 'perspective': 0.0,         # 透视变化范围 (0.0 - 0.001)，默认值 0.0
+    # 'flipud': 0.0,              # 上下翻转概率 (0.0 - 1.0)，默认值 0.0
+    # 'fliplr': 0.5,              # 左右翻转概率 (0.0 - 1.0)，默认值 0.5
+    # 'bgr': 0.0,                 # BGR 色彩顺序调整概率 (0.0 - 1.0)，默认值 0.0
+    # 'mosaic': 0.5,              # Mosaic 数据增强 (0.0 - 1.0)，默认值 1.0
+    # 'mixup': 0.0,               # Mixup 数据增强 (0.0 - 1.0)，默认值 0.0
+    # 'copy_paste': 0.0,          # Copy-Paste 数据增强 (0.0 - 1.0)，默认值 0.0
+    # 'copy_paste_mode': 'flip',  # Copy-Paste 增强模式 ('flip' 或 'mixup')，默认值 'flip'
+    # 'auto_augment': 'randaugment',  # 自动增强策略 ('randaugment', 'autoaugment', 'augmix')，默认值 'randaugment'
+    # 'erasing': 0.4,             # 随机擦除增强比例 (0.0 - 0.9)，默认值 0.4
+    # 'crop_fraction': 1.0,       # 裁剪比例 (0.1 - 1.0)，默认值 1.0
  
 }
  
