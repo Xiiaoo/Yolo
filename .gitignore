@@ -171,3 +171,5 @@ pnnx*
 
 # calibration image
 calibration_*.npy
+JD_tracks
+epfs

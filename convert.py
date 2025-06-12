@@ -1,5 +1,7 @@
 import json
 import os
+import random
+import shutil
  
  
 def labelme2yolo_seg(class_name, json_dir, labels_dir):
@@ -49,22 +51,15 @@ def labelme2yolo_seg(class_name, json_dir, labels_dir):
 #     'D:\\JDSignUp\\0611\\img_labels_yolo'
 # )
 
-
-
-
-import os
-import random
-import shutil
-
 # 原始文件夹路径
-images_dir = 'D:\\JDSignUp\\0611\\img_new'
-labels_dir = 'D:\\JDSignUp\\0611\\img_labels_yolo'
+images_dir = 'E:\\AI数据集\\京东\\images'
+labels_dir = 'E:\\AI数据集\\京东\\labels'
 
 # 目标文件夹路径
-train_image_dir = 'D:\\JDSignUp\\0611\\imgs\\train'
-val_image_dir = 'D:\\JDSignUp\\0611\\imgs\\val'
-train_label_dir = 'D:\\JDSignUp\\0611\\labels\\train'
-val_label_dir = 'D:\\JDSignUp\\0611\\labels\\val'
+train_image_dir = 'D:\\Yolo\\JD_tracks\\images\\train'
+val_image_dir = 'D:\\Yolo\\JD_tracks\\images\\val'
+train_label_dir = 'D:\\Yolo\\JD_tracks\\labels\\train'
+val_label_dir = 'D:\\Yolo\\JD_tracks\\labels\\val'
 
 # 创建输出文件夹
 os.makedirs(train_image_dir, exist_ok=True)
@@ -77,7 +72,7 @@ image_files = [f for f in os.listdir(images_dir) if f.lower().endswith(('.jpg', 
 
 # 打乱并划分
 random.shuffle(image_files)
-split_idx = int(0.9 * len(image_files))
+split_idx = int(0.8 * len(image_files))
 train_files = image_files[:split_idx]
 val_files = image_files[split_idx:]
 
@@ -99,4 +94,4 @@ def copy_split(file_list, img_src, lbl_src, img_dst, lbl_dst):
 copy_split(train_files, images_dir, labels_dir, train_image_dir, train_label_dir)
 copy_split(val_files, images_dir, labels_dir, val_image_dir, val_label_dir)
 
-print("✅ 划分完成！图像和标签已按 9:1 存放到 images/train, images/val 和 labels/train, labels/val。")
+print("✅ 划分完成！图像和标签已按 8:2 存放到 images/train, images/val 和 labels/train, labels/val。")
